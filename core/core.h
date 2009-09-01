@@ -12,8 +12,14 @@ typedef struct
 
 typedef struct
 {
+  const float (*function)( float x );
+  const float (*derivative)( float x );
+} fdb_t;
+
+typedef struct
+{
   uint neurons;
-  uint activation;
+  const fdb_t *activation;
   neuron_t *neuron;
 } layer_t;
 

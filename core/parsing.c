@@ -3,10 +3,9 @@
 #include "parsing.h"
 #include "core.h"
 
-void parse_iformat( FILE *input,
-		    iformat *data )
+void parse_iformat( FILE *input, iformat *data, const fdb_t *table )
 {
-  uint i, j, k;
+  uint i, j;
   uint synapsis;
   rewind( input );
   fread( &data->version, sizeof( uint ), 1, input );
@@ -15,7 +14,8 @@ void parse_iformat( FILE *input,
   for( i = 0; i <= data->dlayers; i++ )
     {
       fread( &data->layer[ i ].neurons, sizeof( uint ), 1, input );
-      fread( &data->layer[ i ].activation, sizeof( uint ), 1, input );
+      fread( &j, sizeof( uint ), 1, input );
+      data->layer[ i ].activation = &table[ j ];
     }
   for( i = 0; i < data->dlayers; i++ )
     {
@@ -31,9 +31,7 @@ void parse_iformat( FILE *input,
 		 synapsis,
 		 input );
 	  data->layer[ i ].neuron[ j ].change
-	    = malloc( synapsis * sizeof( float ) );
-	  for( k = 0; k < synapsis; k++ )
-	    data->layer[ i ].neuron[ j ].change[ k ] = 0;
+	    = calloc( synapsis, sizeof( float ) );
 	}
     }
   data->layer[ data->dlayers ].neuron

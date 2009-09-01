@@ -1,11 +1,7 @@
 #ifndef FDB_H
 #define FDB_H
 
-typedef struct
-{
-  float (*function)( float x );
-  float (*derivative)( float x );
-} fdb_t;
+#include "core.h"
 
 void get_fdb( fdb_t *fdb );
 
