@@ -7,7 +7,11 @@ void see( layer_t *layer, const float *signal );
 
 void think( layer_t *layer, uint dlayers );
 
-void learn( layer_t *layer, uint dlayers, const float *expected );
+void learn( layer_t *layer,
+	    const uint dlayers,
+	    const float lr,
+	    const float m,
+	    const float *expected );
 
 float collect( layer_t *layer, uint level );
 

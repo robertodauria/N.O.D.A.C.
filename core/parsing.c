@@ -30,8 +30,7 @@ void parse_iformat( FILE *input, iformat *data, const fdb_t *table )
 		 sizeof( float ),
 		 synapsis,
 		 input );
-	  data->layer[ i ].neuron[ j ].change
-	    = calloc( synapsis, sizeof( float ) );
+	  data->layer[ i ].neuron[ j ].change = 0;
 	}
     }
   data->layer[ data->dlayers ].neuron
@@ -46,30 +45,33 @@ void parse_iformat( FILE *input, iformat *data, const fdb_t *table )
 	     input );
     }
   fread( &data->op, sizeof( uint ), 1, input );
-  fread( &data->lr, sizeof( float ), 1, input );
-  fread( &data->m, sizeof( float ), 1, input );
-  fread( &data->sets, sizeof( uint ), 1, input );
-  data->set = malloc( data->sets * sizeof( set_t ) );
-  for( i = 0; i < data->sets; i++ )
+  if( data->op > 0 )
     {
-      fread( &data->set[ i ].epochs, sizeof( uint ), 1, input );
-      fread( &data->set[ i ].signals, sizeof( uint ), 1, input );
-      data->set[ i ].signal
-	= malloc( data->set[ i ].signals * sizeof( signal_t ) );
-      for( j = 0; j < data->set[ i ].signals; j++ )
+      fread( &data->lr, sizeof( float ), 1, input );
+      fread( &data->m, sizeof( float ), 1, input );
+      fread( &data->sets, sizeof( uint ), 1, input );
+      data->set = malloc( data->sets * sizeof( set_t ) );
+      for( i = 0; i < data->sets; i++ )
 	{
-	  data->set[ i ].signal[ j ].in
-	    = malloc( data->layer[ 0 ].neurons * sizeof( float ) );
-	  fread( data->set[ i ].signal[ j ].in,
-		 sizeof( float ),
-		 data->layer[ 0 ].neurons,
-		 input );
-	  data->set[ i ].signal[ j ].out
-	    = malloc( data->layer[ data->dlayers ].neurons * sizeof( float ) );
-	  fread( data->set[ i ].signal[ j ].in,
-		 sizeof( float ),
-		 data->layer[ data->dlayers ].neurons,
-		 input );
+	  fread( &data->set[ i ].epochs, sizeof( uint ), 1, input );
+	  fread( &data->set[ i ].signals, sizeof( uint ), 1, input );
+	  data->set[ i ].signal
+	    = malloc( data->set[ i ].signals * sizeof( signal_t ) );
+	  for( j = 0; j < data->set[ i ].signals; j++ )
+	    {
+	      data->set[ i ].signal[ j ].in
+		= malloc( data->layer[ 0 ].neurons * sizeof( float ) );
+	      fread( data->set[ i ].signal[ j ].in,
+		     sizeof( float ),
+		     data->layer[ 0 ].neurons,
+		     input );
+	      data->set[ i ].signal[ j ].out
+		= malloc( data->layer[ data->dlayers ].neurons * sizeof( float ) );
+	      fread( data->set[ i ].signal[ j ].in,
+		     sizeof( float ),
+		     data->layer[ data->dlayers ].neurons,
+		     input );
+	    }
 	}
     }
 }

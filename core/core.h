@@ -7,7 +7,8 @@ typedef struct
 {
   float activation;
   float *weigth;
-  float *change;
+  float delta;
+  float change;
 } neuron_t;
 
 typedef struct

@@ -28,7 +28,11 @@ int main( int argc, char **argv )
 	  if( idata.op > 0 )
 	    learn( idata.layer,
 		   idata.dlayers,
+		   idata.lr,
+		   idata.m,
 		   idata.set[ i ].signal[ k ].out );
+	  else
+	    dump_output( &idata.layer[ idata.dlayers ] );
 	}
   return EXIT_SUCCESS;
 }

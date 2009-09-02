@@ -22,9 +22,38 @@ void think( layer_t *layer, uint dlayers )
       }
 }
 
-void learn( layer_t *layer, uint dlayers, const float *expected )
+void learn( layer_t *layer,
+	    const uint dlayers,
+	    const float lr,
+	    const float m,
+	    const float *expected )
 {
-  dlayers = 0;
+  uint i, j, k;
+  float new_change, act;
+  for( i = 0; i < layer[ dlayers ].neurons; i++ )
+    {
+      act = layer[ dlayers ].neuron[ i ].activation;
+      layer[ dlayers ].neuron[ i ].delta
+	= layer[ dlayers ].activation->derivative( act )
+	* ( expected[ i ] - act );
+      new_change = act * layer[ dlayers ].neuron[ i ].delta;
+      *layer[ dlayers ].neuron[ i ].weigth += lr * new_change
+	+ m * layer[ dlayers ].neuron[ i ].change;
+      layer[ dlayers ].neuron[ i ].change = new_change;
+    }
+  for( i = dlayers - 1; i >= 0 ; i-- )
+    for( j = 0; j < layer[ i ].neurons; j++ )
+      for( k = 0; k < layer[ i + 1 ].neurons; k++ )
+	{
+	  layer[ i ].neuron[ j ].delta
+	    += layer[ i + 1 ].neuron[ j ].delta
+	    * layer[ i ].neuron[ j ].weigth[ k ];
+	  new_change = layer[ i ].neuron[ j ].activation
+	    * layer[ i ].neuron[ j ].delta;
+	  layer[ i ].neuron[ j ].weigth[ k ]
+	    += lr * new_change + m * layer[ i ].neuron[ j ].change;
+	  layer[ i ].neuron[ j ].change = new_change;
+	}
 }
 
 float collect( layer_t *layer, uint level )
