@@ -30,4 +30,4 @@ NR = NetRunner("feed-forward", [
 NR.add_file("test")
 NR.set_epochs(0, 1000)
 NR.set_epochs(1, 800)
-NR.make_landscape()
+NR.make_landscape(1000, 0.1)
