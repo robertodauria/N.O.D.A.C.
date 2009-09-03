@@ -39,10 +39,6 @@ void learn( layer_t *layer,
       layer[ dlayers ].neuron[ i ].delta
 	= layer[ dlayers ].activation->derivative( act )
 	* ( expected[ i ] - act );
-      new_change = act * layer[ dlayers ].neuron[ i ].delta;
-      *layer[ dlayers ].neuron[ i ].weigth += lr * new_change
-	+ m * layer[ dlayers ].neuron[ i ].change;
-      layer[ dlayers ].neuron[ i ].change = new_change;
     }
   for( i = dlayers - 1; i >= 0 ; i-- )
     for( j = 0; j < layer[ i ].neurons; j++ )

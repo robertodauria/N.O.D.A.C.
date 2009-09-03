@@ -5,16 +5,16 @@
 void dump_format( const format_t *data )
 {
   printf( "Type:\t\t%08X\n", data->version );
-  printf( "Layers:\t\t%u\n", data->dlayers + 1 );
-  printf( "Training mode:\t%u\n", data->op );
+  printf( "Layers:\t\t%8u\n", data->dlayers + 1 );
+  printf( "Training mode:\t%8u\n", data->op );
   printf( "Learning rate:\t%f\n", data->lr );
   printf( "Momentum:\t%f\n", data->m );
-  printf( "Sets:\t\t%u\n", data->sets );
+  printf( "Sets:\t\t%8u\n\n", data->sets );
 }
 
 void dump_eqm( float eqm )
 {
-  printf( "Error:\t%f\n", eqm );
+  printf( "Error:\t\t%f\n", eqm );
 }
 
 void dump_output( const layer_t *last )
