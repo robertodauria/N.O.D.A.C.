@@ -28,7 +28,7 @@ int main( int argc, char **argv )
 	  for( k = 0; k < idata.set[ i ].signals; k++ )
 	    {
 	      see( idata.layer, idata.set[ i ].signal[ k ].in );
-	      think( &idata.layer[ 1 ], idata.dlayers );
+	      think( idata.layer, idata.dlayers );
 	      learn( idata.layer,
 		     idata.dlayers,
 		     idata.lr,

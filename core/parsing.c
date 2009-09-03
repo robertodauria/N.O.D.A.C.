@@ -35,15 +35,6 @@ void parse_iformat( FILE *input, format_t *data, const fdb_t *table )
     }
   data->layer[ data->dlayers ].neuron
     = malloc( data->layer[ data->dlayers ].neurons * sizeof( neuron_t ) );
-  for( j = 0; j < data->layer[ data->dlayers ].neurons; j++ )
-    {
-      data->layer[ data->dlayers ].neuron[ j ].weigth
-	= malloc( sizeof( float ) );
-      fread( data->layer[ data->dlayers ].neuron[ j ].weigth,
-	     sizeof( float ),
-	     1,
-	     input );
-    }
   fread( &data->op, sizeof( uint ), 1, input );
   if( data->op > 0 )
     {
