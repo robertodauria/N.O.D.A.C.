@@ -23,7 +23,7 @@ import array
 from re import * 
 
 network_types = ('feed-forward')
-activation_types = ('linear', 'sigmoid', 'tanh')
+activation_types = ('linear', 'tanh', 'sigmoid')
 config_version = 0
 
 class NetRunner:
