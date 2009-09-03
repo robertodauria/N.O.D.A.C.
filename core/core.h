@@ -13,8 +13,8 @@ typedef struct
 
 typedef struct
 {
-  const float (*function)( float x );
-  const float (*derivative)( float x );
+  float (* const function)( float x );
+  float (* const derivative)( float x );
 } fdb_t;
 
 typedef struct
@@ -48,6 +48,6 @@ typedef struct
   float m;
   uint sets;
   set_t *set;
-} iformat;
+} format_t;
 
 #endif // CORE_H

@@ -8,31 +8,52 @@
 
 int main( int argc, char **argv )
 {
-  iformat idata;
+  format_t idata;
   fdb_t *table;
-  FILE *ifh;
-  uint i, j, k;
-  get_fdb( table );
-  ifh = fopen( "../landscape.nod", "rb" );
-  if( ifh == NULL )
+  FILE *fh;
+  float eqm = 0;
+  float *in;
+  int i, j, k;
+  set_fdb( &table );
+  fh = fopen( "../landscape.nod", "rb" );
+  if( fh == NULL )
     return EXIT_FAILURE;
-  parse_iformat( ifh, &idata, table );
-  fclose( ifh );
-  dump_iformat( &idata );
-  for( i = 0; i < idata.sets; i++ )
-    for( j = 0; j < idata.set[ i ].epochs; j++ )
-      for( k = 0; k < idata.set[ i ].signals; k++ )
+  parse_iformat( fh, &idata, table );
+  fclose( fh );
+  dump_format( &idata );
+  if( idata.op > 0 )
+    for( i = 0; i < idata.sets; i++ )
+      {
+	for( j = 0; j < idata.set[ i ].epochs; j++ )
+	  for( k = 0; k < idata.set[ i ].signals; k++ )
+	    {
+	      see( idata.layer, idata.set[ i ].signal[ k ].in );
+	      think( &idata.layer[ 1 ], idata.dlayers );
+	      learn( idata.layer,
+		     idata.dlayers,
+		     idata.lr,
+		     idata.m,
+		     idata.set[ i ].signal[ k ].out,
+		     &eqm );
+	    }
+	dump_eqm( eqm );
+      }
+  else
+    {
+      i = idata.layer[ 0 ].neurons;
+      in = malloc( i * sizeof( float ) );
+      while( fread( in, sizeof( float ), i, stdin ) == (size_t) i )
 	{
-	  see( idata.layer, idata.set[ i ].signal[ k ].in );
+	  see( idata.layer, in );
 	  think( &idata.layer[ 1 ], idata.dlayers );
-	  if( idata.op > 0 )
-	    learn( idata.layer,
-		   idata.dlayers,
-		   idata.lr,
-		   idata.m,
-		   idata.set[ i ].signal[ k ].out );
-	  else
-	    dump_output( &idata.layer[ idata.dlayers ] );
+	  fh = fopen( "../landscape.out", "wb" );
+	  if( fh == NULL )
+	    return EXIT_FAILURE;
+	  dump_memory( fh, &idata, table );
+	  fclose( fh );
+	  dump_output( &idata.layer[ idata.dlayers ] );
 	}
+      free( in );
+    }
   return EXIT_SUCCESS;
 }

@@ -3,8 +3,12 @@
 
 #include "core.h"
 
-void dump_iformat( const iformat *data );
+void dump_format( const format_t *data );
+
+void dump_eqm( const float eqm );
 
 void dump_output( const layer_t *last );
+
+void dump_memory( FILE *fh, const format_t *data, const fdb_t *table );
 
 #endif // TRACING_H

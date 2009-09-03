@@ -11,8 +11,9 @@ void learn( layer_t *layer,
 	    const uint dlayers,
 	    const float lr,
 	    const float m,
-	    const float *expected );
+	    const float *expected,
+	    float *eqm );
 
-float collect( layer_t *layer, uint level );
+float collect( const layer_t *layer, uint level );
 
 #endif // COMPUTING_H

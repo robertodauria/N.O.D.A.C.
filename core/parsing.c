@@ -3,9 +3,9 @@
 #include "parsing.h"
 #include "core.h"
 
-void parse_iformat( FILE *input, iformat *data, const fdb_t *table )
+void parse_iformat( FILE *input, format_t *data, const fdb_t *table )
 {
-  uint i, j;
+  int i, j;
   uint synapsis;
   rewind( input );
   fread( &data->version, sizeof( uint ), 1, input );

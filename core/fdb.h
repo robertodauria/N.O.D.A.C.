@@ -3,6 +3,6 @@
 
 #include "core.h"
 
-void get_fdb( fdb_t *fdb );
+void set_fdb( fdb_t **fdb );
 
 #endif // FDB_H
