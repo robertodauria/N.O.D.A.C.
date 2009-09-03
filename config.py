@@ -135,7 +135,7 @@ class NetRunner:
 		# HEADER section
 		
 		# header int values
-		self.__header = array.array('i')
+		self.__header = array.array('I')
 		self.__header.append(config_version)
 		self.__header.append(len(self.__layers)-1)
 		for layer in self.__layers:
@@ -159,7 +159,7 @@ class NetRunner:
 		print self.__headerw
 		
 		# operating mode
-		self.__opmode = array.array('i')
+		self.__opmode = array.array('I')
 		self.__opmode.append(self.__mode)
 		print "OPERATING MODE:"
 		print self.__opmode
@@ -172,7 +172,7 @@ class NetRunner:
 		print self.__headerfl
 		
 		# sets number
-		self.__setsarr = array.array('i')
+		self.__setsarr = array.array('I')
 		self.__setsarr.append(len(self.__sets))
 		print "SETS number:", self.__setsarr
 		
@@ -187,7 +187,7 @@ class NetRunner:
 		
 		print "DATA:"
 		for set in self.__sets:
-			self.__miniheader = array.array('i')
+			self.__miniheader = array.array('I')
 			self.__numarray = array.array('f')
 			self.__miniheader.append(self.__epochs[self.__sets.index(set)])
 			self.__miniheader.append(len(set))
