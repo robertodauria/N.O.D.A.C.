@@ -26,7 +26,7 @@ network_types = ('feed-forward')
 activation_types = ('linear', 'tanh', 'sigmoid')
 config_version = 0
 
-class NetRunner:
+class NetConfig:
 	def __init__(self, type, layers): # Set network type and layers
 		if type in network_types:
 			self.__type = type

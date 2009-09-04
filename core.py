@@ -21,15 +21,15 @@
 from config import *
 
 # Test section	
-NR = NetRunner("feed-forward", [
+Net = NetConfig("feed-forward", [
 								{'neurons': 2, 'activation': 'tanh'},
 								{'neurons': 2, 'activation': 'tanh'}, 
 								{'neurons': 1, 'activation': 'tanh'}
 								])		
 
 # Feeding the network...
-NR.add_file("test")
-NR.set_epochs(0, 1000)
-NR.set_epochs(1, 800)
-NR.set_mode(1)
-NR.make_landscape(0.1)
+Net.add_file("test")
+Net.set_epochs(0, 1000)
+Net.set_epochs(1, 800)
+Net.set_mode(1)
+Net.make_landscape(0.1)
