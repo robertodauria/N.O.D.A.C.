@@ -5,7 +5,9 @@
 
 void dump_format( const format_t *data );
 
-void dump_eqm( const float eqm );
+void dump_eqm( float eqm );
+
+void dump_error( float error );
 
 void dump_output( const layer_t *last );
 

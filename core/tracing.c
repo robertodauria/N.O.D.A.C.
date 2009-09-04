@@ -14,7 +14,12 @@ void dump_format( const format_t *data )
 
 void dump_eqm( float eqm )
 {
-  printf( "Error:\t\t%f\n", eqm );
+  printf( "Set error:\t%f\t", eqm );
+}
+
+void dump_error( float error )
+{
+  printf( "Global error:\t%f\n", error );
 }
 
 void dump_output( const layer_t *last )
