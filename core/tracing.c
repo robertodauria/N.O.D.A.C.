@@ -39,11 +39,6 @@ void dump_memory( FILE *fh, const format_t *data, const fdb_t *table )
 	      sizeof( float ),
 	      data->layer[ i + 1 ].neurons,
 	      fh );
-  for( i = 0; i < data->layer[ data->dlayers ].neurons; i++ )
-    fwrite( data->layer[ data->dlayers ].neuron[ i ].weigth,
-	    sizeof( float ),
-	    1,
-	    fh );
 }
 
 void dump_results( const float *input,
