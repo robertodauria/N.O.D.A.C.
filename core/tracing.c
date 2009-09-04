@@ -22,16 +22,6 @@ void dump_error( float error )
   printf( "Global error:\t%f\n", error );
 }
 
-void dump_output( const layer_t *last )
-{
-  uint i;
-  printf( "Results:\n" );
-  for( i = 0; i < last->neurons; i++ )
-    printf( "%-.4u\t%f\n",
-	    i,
-	    last->neuron[ i ].activation * *last->neuron[ i ].weigth );
-}
-
 void dump_memory( FILE *fh, const format_t *data, const fdb_t *table )
 {
   int i, j;
@@ -54,4 +44,16 @@ void dump_memory( FILE *fh, const format_t *data, const fdb_t *table )
 	    sizeof( float ),
 	    1,
 	    fh );
+}
+
+void dump_results( const float *input,
+		   uint in,
+		   const neuron_t *neuron,
+		   uint out )
+{
+  uint i;
+  for( i = 0; i < in; i++ )
+    printf( "<- [%3u] %f\n", i, input[ i ] );
+  for( i = 0; i < out; i++ )
+    printf( "-> [%3u] %f\n", i, neuron[ i ].activation );
 }

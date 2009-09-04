@@ -42,6 +42,11 @@ int main( int argc, char **argv )
 	  dump_eqm( eqm );
 	  dump_error( error );
 	}
+      fh = fopen( "../landscape.out", "wb" );
+      if( fh == NULL )
+	return EXIT_FAILURE;
+      dump_memory( fh, &idata, table );
+      fclose( fh );
     }
   else
     {
@@ -51,12 +56,10 @@ int main( int argc, char **argv )
 	{
 	  see( idata.layer, in );
 	  think( &idata.layer[ 1 ], idata.dlayers );
-	  fh = fopen( "../landscape.out", "wb" );
-	  if( fh == NULL )
-	    return EXIT_FAILURE;
-	  dump_memory( fh, &idata, table );
-	  fclose( fh );
-	  dump_output( &idata.layer[ idata.dlayers ] );
+	  dump_results( in,
+			idata.layer[ 0 ].neurons,
+			idata.layer[ idata.dlayers ].neuron,
+			idata.layer[ idata.dlayers ].neurons );
 	}
       free( in );
     }
