@@ -23,7 +23,7 @@ int main( int argc, char **argv )
   dump_format( &idata );
   if( idata.op > 0 )
     {
-      error = 0;
+      error = eqm = 0;
       for( i = 0; i < idata.sets; i++ )
 	{
 	  for( j = 0; j < idata.set[ i ].epochs; j++ )
