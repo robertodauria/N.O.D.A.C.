@@ -121,7 +121,7 @@ class NetRunner:
 	def read_config():
 		pass
 	
-	def make_landscape(self, epochs=1000, N=0.5, M=0.1): # Run network
+	def make_landscape(self, N=0.5, M=0.1): # Run network
 		print "Network type:", self.__type 
 		for i in range(len(self.__layers)):
 			print "Layer", i, "-"

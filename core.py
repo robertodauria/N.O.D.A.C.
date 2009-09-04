@@ -22,12 +22,14 @@ from config import *
 
 # Test section	
 NR = NetRunner("feed-forward", [
-								{'activation': 'sigmoid', 'neurons': 2},
-								{'neurons': 2}, {'neurons': 1}
+								{'neurons': 2, 'activation': 'tanh'},
+								{'neurons': 2, 'activation': 'tanh'}, 
+								{'neurons': 1, 'activation': 'tanh'}
 								])		
 
 # Feeding the network...
 NR.add_file("test")
 NR.set_epochs(0, 1000)
 NR.set_epochs(1, 800)
-NR.make_landscape(1000, 0.1)
+NR.set_mode(1)
+NR.make_landscape(0.1)
