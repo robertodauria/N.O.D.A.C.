@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<version>0</version>
+	<layer>
+		<size>2</size>
+		<activation>linear</activation>
+	</layer>
+	<layer>
+		<size>3</size>
+		<activation>tanh</activation>
+	</layer>
+	<layer>
+		<size>1</size>
+		<activation>tanh</activation>
+	</layer>
+
+	<weights>
+		<w>0.5</w>
+		<w>0.5</w>
+		<w>0.5</w>
+		<w>0.5</w>
+		<w>0.5</w>
+		<w>0.5</w>
+		<w>0.5</w>
+		<w>0.5</w>
+		<w>0.5</w>
+	</weights>
+</config>
