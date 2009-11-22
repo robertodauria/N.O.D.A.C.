@@ -18,16 +18,22 @@
 # Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
 
-import libxml2
 import array
 from re import * 
+from xml.dom import minidom
 
 network_types = ('feed-forward')
 activation_types = ('linear', 'tanh', 'sigmoid')
 config_version = 0
 
-class NetConfig:
-	def __init__(self, type, layers): # Set network type and layers
+class NeuralNetwork:
+	def __init__(self): # Initialize the network
+		self.__sets = []
+		self.__epochs = []
+		self.__mode = 0 # default: train
+		self.__layers = []
+		
+	def new(self, type, layers): # New network from scratch
 		if type in network_types:
 			self.__type = type
 		else:
@@ -35,7 +41,6 @@ class NetConfig:
 			exit()
 			
 		self.__layers = layers
-		
 		for layer in self.__layers:
 			if not layer.has_key('activation'): 
 				# make 'linear' standard value, if not specified
@@ -43,13 +48,10 @@ class NetConfig:
 			if not layer.has_key('neurons'):
 				print "Error: no neurons number"
 				exit()
-		
-		self.__mode = 0 # default: train		
-		self.__sets = []
-		self.__epochs = []
-		self.__firstlayer = self.__layers[0]['neurons']
-		self.__lastlayer = self.__layers[len(layers)-1]['neurons']
 				
+		self.__firstlayer = self.__layers[0]['neurons']
+		self.__lastlayer = self.__layers[-1]['neurons']
+		
 	def set_activation(self, nlayer, act_type): # Set layer activation type
 		if act_type in activation_types:
 			self.__layers[nlayer]['activation'] = act_type
@@ -115,12 +117,42 @@ class NetConfig:
 	# TODO: readconfig()/writeconfig(), to read/write 
 	# human-readable configuration files ;)
 	
-	def write_config():
+	def writeconfig():
 		pass
 		
-	def read_config():
-		pass
-	
+	def readconfig(self, xmlfile, randomw = False):
+		# temporary list - go to self.__layers if file is ok
+		self.__templayers = []
+		self.__isok = True # flag for correctness
+		self.__config = minidom.parse(xmlfile).documentElement
+		
+		if int(self.__config.getElementsByTagName('version')[0].firstChild.data) \
+		== config_version:
+			print "Config version and program version match..."
+			self.__nlayer = 0
+			for layer in self.__config.getElementsByTagName('layer'):
+				self.__templayers.append({})
+				if len(layer.getElementsByTagName('size')) != 0:
+					self.__templayers[self.__nlayer]['neurons'] = \
+					int(layer.getElementsByTagName('size')[0].firstChild.data.encode('UTF-8'))
+				else:
+					print "Error in config file: missing layer size."
+					self.__isok = False
+				if len(layer.getElementsByTagName('activation')) != 0:
+					self.__templayers[self.__nlayer]['activation'] = \
+					layer.getElementsByTagName('activation')[0].firstChild.data.encode('UTF-8')
+				else:
+					print "Setting default activation for layer", self.__nlayer
+					self.__templayers[self.__nlayer]['activation'] = 'linear' # default
+				self.__nlayer = self.__nlayer + 1
+			print "Temporary layer list:"
+			print self.__templayers
+			if self.__isok:
+				print "Setting layers = templayers..."
+				self.__layers = self.__templayers
+			else:
+				print "One or more errors in config file."
+				
 	def make_landscape(self, N=0.5, M=0.1): # Run network
 		print "Network type:", self.__type 
 		for i in range(len(self.__layers)):

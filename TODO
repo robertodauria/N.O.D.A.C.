@@ -1,0 +1,12 @@
+- N.O.D.A.C. TODO -
+
+- General -
+	- Get a working network, with weights saving
+	- Get a load/save system for network configuration
+	- Redefine some functions in config.py (NetConfig.set_epochs, ...) and adapt them to GUI needs
+	(removed from alpha) - Get a working GUI stub
+	- Test everything and compare results with BPNN or other neural network libraries
+	
+- Network -
+
+- GUI -

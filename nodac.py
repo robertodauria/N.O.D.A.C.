@@ -20,16 +20,17 @@
 
 from config import *
 
-# Test section	
-Net = NetConfig("feed-forward", [
+# Test section #
+
+Net = NeuralNetwork()	
+Net.new("feed-forward", [
 								{'neurons': 2, 'activation': 'tanh'},
 								{'neurons': 2, 'activation': 'tanh'}, 
 								{'neurons': 1, 'activation': 'tanh'}
-								])		
-
-# Feeding the network...
+								])
 Net.add_file("test")
-Net.set_epochs(0, 1000)
-Net.set_epochs(1, 800)
-Net.set_mode(1)
-Net.make_landscape(0.1)
+Net.make_landscape()
+								
+
+print "\n\n- readconfig test section -"
+Net.readconfig("testnet.xml")
