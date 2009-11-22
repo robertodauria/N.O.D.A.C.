@@ -23,14 +23,15 @@ from config import *
 # Test section #
 
 Net = NeuralNetwork()	
-Net.new("feed-forward", [
-								{'neurons': 2, 'activation': 'tanh'},
-								{'neurons': 2, 'activation': 'tanh'}, 
-								{'neurons': 1, 'activation': 'tanh'}
-								])
-Net.add_file("test")
-Net.make_landscape()
+#Net.new([
+#		{'neurons': 2, 'activation': 'tanh'},
+#		{'neurons': 2, 'activation': 'tanh'}, 
+#		{'neurons': 1, 'activation': 'tanh'}
+#		])
 								
 
 print "\n\n- readconfig test section -"
 Net.readconfig("testnet.xml")
+Net.writeconfig("out.xml")
+Net.add_file("test")
+Net.make_landscape()
