@@ -23,15 +23,15 @@ from config import *
 # Test section #
 
 Net = NeuralNetwork()	
-#Net.new([
-#		{'neurons': 2, 'activation': 'tanh'},
-#		{'neurons': 2, 'activation': 'tanh'}, 
-#		{'neurons': 1, 'activation': 'tanh'}
-#		])
-								
+Net.new([
+		{'neurons': 2},
+		{'neurons': 2, 'activation': 'tanh'}, 
+		{'neurons': 1, 'activation': 'tanh'}
+		])				
+#print "\n\n- read_config test section -"				
+#Net.read_config("testnet.xml")
+#Net.write_config("out.xml")
 
-print "\n\n- readconfig test section -"
-Net.readconfig("testnet.xml")
-Net.writeconfig("out.xml")
-Net.add_file("test")
+print "\n- read_dataset test section -"
+Net.read_dataset("dataset.xml")
 Net.make_landscape()

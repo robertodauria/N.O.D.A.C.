@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<version>0</version>
+	<set>
+
+		<case>
+			<i>2</i>
+			<i>2</i>
+			<o>4</o>
+		</case>
+		<case>
+			<i>3</i>
+			<i>3</i>
+			<o>6</o>
+		</case>
+	</set>
+	<set>
+		<epochs>2000</epochs>
+		<case>
+			<i>5</i>
+			<i>5</i>
+			<o>10</o>
+		</case>
+	</set>
+	<set>
+		<epochs>500</epochs>
+		<case>
+			<i>8</i>
+			<i>8</i>
+			<o>16</o>
+		</case>
+		<case>
+			<i>9</i>
+			<i>9</i>
+			<o>18</o>
+		</case>
+	</set>
+</dataset>

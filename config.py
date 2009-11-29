@@ -25,6 +25,7 @@ from xml.dom import minidom
 
 activation_types = ('linear', 'tanh', 'sigmoid')
 config_version = 0
+dataset_version = 0
 
 class NeuralNetwork:
 	def __init__(self): # Initialize the network
@@ -48,7 +49,7 @@ class NeuralNetwork:
 			if not layer.has_key('neurons'):
 				print "Error: no neurons number specified"
 				exit()
-				
+		print self.__layers
 		self.__firstlayer = self.__layers[0]['neurons']
 		self.__lastlayer = self.__layers[-1]['neurons']
 		
@@ -78,47 +79,71 @@ class NeuralNetwork:
 			exit()
 	
 	def set_epochs(self, set, epochs): # Set training epochs for a given set
-		if epochs > 0 and epochs < 65000: # TODO: change 65000 to unsigned int upper limit
+		if epochs > 0 and epochs < 4294967295: 
 			self.__epochs[set] = epochs
 			print "Epochs for set", set, "changed to", epochs
 		else:
 			print "Error: epochs should be between 0 and 65000"
 			exit()
 			
-	# --------------------------------------------
-	# TODO: make a xml parser for dataset handling
-	# --------------------------------------------
-	def add_set(self): # Adds an empty set - TO BE REPLACED
+	def add_set(self): # Adds an empty set
 		self.__sets.append([])
 		self.__epochs.append(1000) # default for new sets is 1000
 
-	def add_entry(self, setn, input, output): # Adds a input/output pair in set setn
-	# - TO BE REPLACED
+	def add_entry(self, setn, inputs, outputs): # Adds a input/output pair in set setn
 		if len(self.__sets) <= setn:
 			print "Error: invalid set number:", setn
-			print self.__sets
 			exit()
-		self.__sets[setn].append([input, output])
-		
-	def add_file(self, filename): # Read filename and add data to sets - TO BE REPLACED
-		if len(self.__sets) == 0:
-			self.add_set()
-			self.__current = 0
-		else:
-			self.__current = len(self.__sets) - 1
-		self.__separator = compile("-") # sets' separator
-		fp = open(filename, "r")
-		for line in fp:
-			if match(self.__separator, line):
-				self.add_set()
-				self.__current += 1
-				continue
-			line = line.split()
-			self.add_entry(self.__current, 
-					line[0:self.__firstlayer], 
-					line[(self.__firstlayer):(self.__firstlayer + self.__lastlayer)])
-		fp.close()
-	# --------------------------------------------
+		self.__sets[setn].append([inputs, outputs])
+	
+	def read_dataset(self, xmlfile): # Read datasets from XML
+		tempsets = []
+		tempepochs = []
+		isok = True # flag for correctness
+		currentset = 0
+		dataset = minidom.parse(xmlfile).documentElement
+		if int(dataset.getElementsByTagName('version')[0].firstChild.data) \
+		== dataset_version:
+			print "Dataset version and program version match..."
+			for set in dataset.getElementsByTagName('set'):
+				tempsets.append([])
+				setepochs = set.getElementsByTagName('epochs')
+				
+				if not setepochs:
+					tempepochs.append(1000)
+				else:
+					tempepochs.append(int(setepochs[0].firstChild.data.\
+					encode('UTF-8')))
+				
+				for case in set.getElementsByTagName('case'):
+					inputs = []
+					outputs = []
+					for i in case.getElementsByTagName('i'):
+						inputs.append(i.firstChild.data.encode('UTF-8'))
+					for o in case.getElementsByTagName('o'):
+						outputs.append(o.firstChild.data.encode('UTF-8'))
+					tempsets[currentset].append([inputs, outputs])
+					
+					# At this point I should already have 
+					# the network structure...
+					if len(inputs) != self.__firstlayer or \
+					len(outputs) != self.__lastlayer:
+						isok = False
+						print \
+						"Error: I/O elements doesn't match layers size"
+					
+					
+				currentset += 1
+				
+			print tempsets
+			print tempepochs
+			if isok:
+				print "Updating sets..."
+				self.__sets = tempsets
+				print "Updating epochs..."
+				self.__epochs = tempepochs
+			else:
+				print "One or more errors in dataset"
 	
 	def syncalc(self, layers): # Returns synapses number
 		syn = 0
@@ -126,7 +151,7 @@ class NeuralNetwork:
 			syn += layers[i]['neurons'] * layers[i+1]['neurons']
 		return syn
 
-	def writeconfig(self, xmlfile):
+	def write_config(self, xmlfile): # write a XML configuration file
 		if self.__ready == False: # Network state check
 			print "Why should I save an empty network?"
 			return
@@ -147,70 +172,68 @@ class NeuralNetwork:
 		fp.write("</config>")
 		fp.close()
 		
-	def readconfig(self, xmlfile):
-		# temporary list - go to self.__layers if file is ok
-		self.__templayers = []
-		self.__isok = True # flag for correctness
-		self.__config = minidom.parse(xmlfile).documentElement
+	def read_config(self, xmlfile): # read a XML configuration file
+		templayers = []
+		isok = True # flag for correctness
+		config = minidom.parse(xmlfile).documentElement
 		
-		if int(self.__config.getElementsByTagName('version')[0].firstChild.data) \
+		if int(config.getElementsByTagName('version')[0].firstChild.data) \
 		== config_version:
 			print "Config version and program version match..."
-			self.__nlayer = 0
+			nlayer = 0
 			
 			# Layer informations
-			for layer in self.__config.getElementsByTagName('layer'):
-				self.__templayers.append({})
+			for layer in config.getElementsByTagName('layer'):
+				templayers.append({})
 
 				if len(layer.getElementsByTagName('size')) != 0:
-					self.__templayers[self.__nlayer]['neurons'] = \
+					templayers[nlayer]['neurons'] = \
 					int(layer.getElementsByTagName('size')[0].firstChild.data.encode('UTF-8'))
 				else:
 					print "Error in config file: missing layer size."
-					self.__isok = False
+					isok = False
 					
 				if len(layer.getElementsByTagName('activation')) != 0:
-					self.__templayers[self.__nlayer]['activation'] = \
+					templayers[nlayer]['activation'] = \
 					layer.getElementsByTagName('activation')[0].\
 					firstChild.data.encode('UTF-8')
 				else:
-					print "Setting default activation for layer", \
-					self.__nlayer
-					self.__templayers[self.__nlayer]['activation'] = \
+					print "Setting default activation for layer", nlayer
+					templayers[nlayer]['activation'] = \
 					'linear' # default
 				
 				
-				self.__nlayer = self.__nlayer + 1
+				nlayer += 1
 			
 			# Weights informations
-			self.__tempweights = []
-			self.__nweight = 0
+			tempweights = []
+			nweight = 0
 			
-			self.__synapses = self.syncalc(self.__templayers)
-			print "Synapses number:", self.__synapses
+			synapses = self.syncalc(templayers)
+			print "Synapses number:", synapses
 			
 			# Get weights
-			for w in self.__config.getElementsByTagName('w'):
-				self.__tempweights.append(1)
-				self.__tempweights[self.__nweight] = float\
+			for w in config.getElementsByTagName('w'):
+				tempweights.append(1)
+				tempweights[nweight] = float\
 				(w.firstChild.data.encode('UTF-8'))
-				self.__nweight = self.__nweight + 1
-			if len(self.__tempweights) != self.__synapses:
+				nweight = nweight + 1
+			if len(tempweights) != synapses:
 				print "Error: Weights number doesn't match synapses number"
-				self.__isok = False
+				isok = False
 				
 			print "Temporary weights list:"
-			print self.__tempweights
+			print tempweights
 				
 			print "Temporary layer list:"
-			print self.__templayers
-			if self.__isok:
+			print templayers
+			if isok:
 				print "Updating layers..."
-				self.__layers = self.__templayers
+				self.__layers = templayers
 				self.__firstlayer = self.__layers[0]['neurons']
 				self.__lastlayer = self.__layers[-1]['neurons']
 				print "Updating weights..."
-				self.__weights = self.__tempweights
+				self.__weights = tempweights
 				self.__ready = True
 			else:
 				print "One or more errors in config file."
@@ -275,6 +298,7 @@ class NeuralNetwork:
 		# DATA section
 		
 		print "DATA:"
+		n = 0
 		for set in self.__sets:
 			self.__miniheader = array.array('I')
 			self.__numarray = array.array('f')
@@ -290,6 +314,3 @@ class NeuralNetwork:
 			print self.__numarray
 		
 		self.__fp.close()
-		#########################################################
-		# TODO: execute the network
-		#########################################################
